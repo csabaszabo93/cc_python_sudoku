@@ -165,7 +165,8 @@ def new_game():
     if new == "y":
         return True
     elif new == "n":
-        return False
+        print("Exit game")
+        sys.exit()
     else:
         print("Invalid input!")
         return new_game()
@@ -178,10 +179,10 @@ def check_continue(grid, level):
     easy_solution = load_csv("{}_solution".format(level))
     if user_answer == "n".lower():
         if gameplay == easy_solution:
-            sleep(1)
+            time.sleep(1)
             print_title(winner_giraffe)
         else:
-            sleep(1)
+            time.sleep(1)
             print_title(loser_giraffe)
         return False
     elif user_answer == "y".lower():
@@ -214,23 +215,56 @@ def add_number(user_row, user_column, user_number, grid, level):
             return True
 
 
+def print_main_menu():
+    os.system("clear")
+    print_title(sudoku_title)
+    print("\t---------Main menu---------\n")
+    print("\tNew Game     -  press: '1'")
+    print("\tLoad Game    -  press: '2'")
+    print("\tExit Game    -  press: '3'\n")
+    
+
+def start_main_menu():
+    invalid = False
+    while True:
+        print_main_menu()
+        if invalid:
+            print("\tInvalid option!")
+        option = input("\tChoose your option: ")
+        if option == "1":
+            time.sleep(0.5)
+            start_game(user_row, user_column, user_number, "gameplay", start_screen(print_levels()))
+            invalid = False
+        elif option == "2":
+            time.sleep(0.5)
+            load_game()
+            ivalid = False
+        elif option != "3":
+            invalid = True
+        else:
+            break
+
+
 # User can choose diffculty
 def select_level():
     level = input("\tChoose your level: ")
-    if level not in ["1", "2", "3"]:
-        return select_level()
-    else:
-        return level
+    while level not in ["0", "1", "2", "3"]:
+        print("\tInvalid input!")
+        level = input("\tChoose your level: ")
+    return level
 
 
 def print_levels():
     os.system('clear')
     print_title(sudoku_title)
     print("\t(-------Levels-------)\n")
+    print("\tDemo     -  press: '0'")
     print("\tEasy     -  press: '1'")
     print("\tMedium   -  press: '2'")
     print("\tNot fun  -  press: '3'\n")
     level = select_level()
+    if level == "0":
+        return "demo"
     if level == "1":
         return "easy"
     elif level == "2":
@@ -265,4 +299,4 @@ def start_game(user_row, user_column, user_number, gameplay, level):
 
 
 # Let the fun begin
-start_game(user_row, user_column, user_number, "gameplay", start_screen(print_levels()))
+start_main_menu()
