@@ -4,6 +4,9 @@ import os
 import csv
 from termcolor import colored
 import time
+import tty
+import termios
+
 
 sudoku_title = r"""
 
@@ -13,6 +16,8 @@ sudoku_title = r"""
     <___/`___|\___|\___/|_\_\`___|
 
 
+Press 'x' to quit the current game.
+Press 's' to save your current game.
  """
 
 
@@ -96,9 +101,22 @@ def print_sudoku(grid, level):
             print("+" + "   +"*9)
 
 
+# Userinput without using enter
+def getch():
+    fd = sys.stdin.fileno()
+    old_settings = termios.tcgetattr(fd)
+    try:
+        tty.setraw(sys.stdin.fileno())
+        ch = sys.stdin.read(1)
+    finally:
+        termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+    return ch
+
+
 # Asking the player to add the row number
 def user_row():
-    row = input("Choose a row: ")
+    print("Choose a row:")
+    row = getch()
     if row.isdigit():
         if int(row) in valid_numbers:
             new_row = int(row)
@@ -106,6 +124,9 @@ def user_row():
         else:
             print("That's not a valid number!")
             return user_row()
+    elif row == "x":
+        print("Exit game")
+        sys.exit()
     else:
         print("That's not a number!")
         return user_row()
@@ -113,7 +134,8 @@ def user_row():
 
 # Asking the player to add the column number
 def user_column():
-    column = input("Choose a column: ")
+    print("Choose a column:")
+    column = getch()
     if column.isdigit():
         if int(column) in valid_numbers:
             new_column = int(column)
@@ -121,6 +143,9 @@ def user_column():
         else:
             print("That's not a valid number!")
             return user_column()
+    elif column == "x":
+        print("Exit game")
+        sys.exit()
     else:
         print("That's not a number!")
         return user_column()
@@ -128,7 +153,8 @@ def user_column():
 
 # Asking the player to add the number
 def user_number():
-    number = input("Add a number from 1 to 9: ")
+    print("Add a number from 1 to 9: ")
+    number = getch()
     if number.isdigit():
         if int(number) in valid_numbers:
             new_number = int(number)
@@ -136,6 +162,9 @@ def user_number():
         else:
             print("That's not a valid number!")
             return user_number()
+    elif number == "x":
+        print("Exit game")
+        sys.exit()
     else:
         print("That's not a number!")
         return user_number()
