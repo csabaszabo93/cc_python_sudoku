@@ -251,7 +251,7 @@ def print_main_menu():
     print("\tNew Game     -  press: '1'")
     print("\tLoad Game    -  press: '2'")
     print("\tExit Game    -  press: '3'\n")
-    
+
 
 def start_main_menu():
     invalid = False
