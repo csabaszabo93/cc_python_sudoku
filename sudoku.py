@@ -1,12 +1,12 @@
-import sys
-import numpy
-import os
-import csv
 from termcolor import colored
+import csv
+import numpy
+import random
+import sys
+import os
+import termios
 import time
 import tty
-import termios
-import random
 
 
 sudoku_title = r"""
@@ -102,7 +102,7 @@ def print_sudoku(grid, level):
             print("+" + "   +"*9)
 
 
-# User input without using enter
+# User input without pressing enter
 def getch():
     fd = sys.stdin.fileno()
     old_settings = termios.tcgetattr(fd)
@@ -276,6 +276,7 @@ def start_main_menu():
         print_main_menu()
         if invalid:
             print("\tInvalid option!")
+        time.sleep(0.5)
         option = input("\tChoose an option: ")
         if option == "1":
             time.sleep(0.5)
@@ -284,7 +285,7 @@ def start_main_menu():
         elif option == "2":
             time.sleep(0.5)
             load_game()
-            ivalid = False
+            invalid = False
         elif option != "3":
             invalid = True
         else:
@@ -308,6 +309,7 @@ def print_levels():
     print("\tEasy     -  press: '1'")
     print("\tMedium   -  press: '2'")
     print("\tNot fun  -  press: '3'\n")
+    time.sleep(0.5)
     level = select_level()
     if level == "0":
         return "demo"
