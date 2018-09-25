@@ -294,8 +294,8 @@ def start_main_menu():
 
 # User can choose diffculty
 def select_level():
-    level = input("\tChoose your level: ")
-    while level not in ["0", "1", "2", "3"]:
+    level = input("\tChoose your level: ").lower()
+    while level not in ["0", "1", "2", "3", "x"]:
         print("\tInvalid input!")
         level = input("\tChoose your level: ")
     return level
@@ -313,12 +313,15 @@ def print_levels():
     level = select_level()
     if level == "0":
         return "demo"
-    if level == "1":
+    elif level == "1":
         return "easy"
     elif level == "2":
         return "medium"
     elif level == "3":
         return "notfun"
+    elif level == "x":
+        print("See you next time!")
+        sys.exit()
 
 
 # Starting the game with a clear terminel to avoid "jumping line"
