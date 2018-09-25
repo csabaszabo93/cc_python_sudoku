@@ -6,18 +6,19 @@ from termcolor import colored
 import time
 import tty
 import termios
+import random
 
 
 sudoku_title = r"""
 
-     ___         _       _
-    / __> _ _  _| | ___ | |__ _ _
-    \__ \| | |/ . |/ . \| / /| | |
-    <___/`___|\___|\___/|_\_\`___|
+        ___         _       _
+       / __> _ _  _| | ___ | |__ _ _
+       \__ \| | |/ . |/ . \| / /| | |
+       <___/`___|\___|\___/|_\_\`___|
 
 
-Press 'x' to quit the current game.
-Press 's' to save your current game.
+   Press 'x' to quit your current game.
+   Press 's' to save your current game.
  """
 
 
@@ -101,7 +102,7 @@ def print_sudoku(grid, level):
             print("+" + "   +"*9)
 
 
-# Userinput without using enter
+# User input without using enter
 def getch():
     fd = sys.stdin.fileno()
     old_settings = termios.tcgetattr(fd)
@@ -125,7 +126,7 @@ def user_row():
             print("That's not a valid number!")
             return user_row()
     elif row == "x":
-        print("Exit game")
+        print("See you next time!")
         sys.exit()
     else:
         print("That's not a number!")
@@ -144,7 +145,7 @@ def user_column():
             print("That's not a valid number!")
             return user_column()
     elif column == "x":
-        print("Exit game")
+        print("See you next time!")
         sys.exit()
     else:
         print("That's not a number!")
@@ -163,7 +164,7 @@ def user_number():
             print("That's not a valid number!")
             return user_number()
     elif number == "x":
-        print("Exit game")
+        print("See you next time!")
         sys.exit()
     else:
         print("That's not a number!")
@@ -194,7 +195,7 @@ def new_game():
     if new == "y":
         return True
     elif new == "n":
-        print("Exit game")
+        print("See you next time!")
         sys.exit()
     else:
         print("Invalid input!")
@@ -259,7 +260,7 @@ def start_main_menu():
         print_main_menu()
         if invalid:
             print("\tInvalid option!")
-        option = input("\tChoose your option: ")
+        option = input("\tChoose an option: ")
         if option == "1":
             time.sleep(0.5)
             start_game(user_row, user_column, user_number, "gameplay", start_screen(print_levels()))
@@ -318,11 +319,19 @@ def start_game(user_row, user_column, user_number, gameplay, level):
     end = time.time()
     play_time = round(end - start)
     if play_time < 60:
-        print("You spent {} sec with creating your solution.".format(play_time))
+        if play_time == 1:
+            print("You solved the puzzle in {} second.".format(play_time))
+        else:
+            print("You solved the puzzle in {} seconds.".format(play_time))
     else:
         minutes = play_time // 60
         seconds = play_time % 60
-        print("You spent {0} min & {1} sec with creating your solution.".format(minutes, seconds))
+        if minutes == 1 and seconds == 1:
+            print("You solved the puzzle in {0} minute & {1} second".format(minutes, seconds))
+        elif minutes > 1 and seconds == 1:
+            print("You solved the puzzle in {0} minutes & {1} second".format(minutes, seconds))
+        else:
+            print("You solved the puzzle in {0} minutes & {1} seconds".format(minutes, seconds))
     if new_game():
         start_game(user_row, user_column, user_number, "gameplay", start_screen(print_levels()))
 
