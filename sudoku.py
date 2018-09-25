@@ -244,6 +244,22 @@ def add_number(user_row, user_column, user_number, grid, level):
             return True
 
 
+# Saves the current gameplay in to an external files
+def save_game():
+    global gameplay
+    global orig_board
+    update_csv("save_gameplay.csv", gameplay)
+    update_csv("save_orig_board.csv", orig_board)
+
+
+# Loads the saved gameplay from the external files
+def load_game():
+    global gameplay
+    global orig_board
+    gameplay = load_csv("save_gameplay.csv")
+    orig_board = load_csv("save_orig_board.csv", orig_board)
+
+
 def print_main_menu():
     os.system("clear")
     print_title(sudoku_title)
