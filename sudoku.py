@@ -95,7 +95,12 @@ def print_sudoku():
         print_row = []
         for c in range(0, len(board[r])):
             if orig_board[r][c] != 0:
-                print_row.append(colored(board[r][c], "cyan"))
+                if level == "demo" or level == "easy":
+                    print_row.append(colored(board[r][c], "cyan"))
+                elif level == "medium":
+                    print_row.append(colored(board[r][c], "yellow"))
+                elif level == "notfun":
+                    print_row.append(colored(board[r][c], "green"))
             else:
                 print_row.append(colored(board[r][c], "white"))
         print_board.append(print_row)
@@ -208,12 +213,13 @@ def new_game():
         return new_game()
 
 
-# After the grid is filled, user can still edit it, then check if he/she won and exit or restart the game
+# After the grid is filled, user can still edit it
+# then check if he/she won and exit or restart the game
 def check_continue():
     user_answer = input("Would you like to change anything in your solution? (y / n) ")
     global gameplay
     global level
-    easy_solution = load_csv("{}_solution".format(level)) # kell bele a random generált szám
+    easy_solution = load_csv("{}_solution".format(level))   # kell bele a random generált szám
     if user_answer == "n".lower():
         if gameplay == easy_solution:
             time.sleep(1)
@@ -300,10 +306,12 @@ def start_main_menu():
 
 # User can choose diffculty
 def select_level():
-    level = input("\tChoose your level: ").lower()
-    while level not in ["0", "1", "2", "3", "x"]:
+    u_level = input("\tChoose your level: ").lower()
+    while u_level not in ["0", "1", "2", "3", "x"]:
         print("\tInvalid input!")
-        level = input("\tChoose your level: ")
+        u_level = input("\tChoose your level: ").lower()
+    num = random.randint(1, 10)
+    level = "{}_puzzle_{}".format(u_level, num)
     return level
 
 
