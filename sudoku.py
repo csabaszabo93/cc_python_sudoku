@@ -54,6 +54,10 @@ loser_giraffe = r"""
 
 valid_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
+orig_grid = []
+gameplay = []
+level = ""
+
 
 # This prints the ASCII art
 def print_title(ascii):
@@ -79,11 +83,12 @@ def update_csv(filename, matrix):
 
 
 # Printing the local grid and coloring it. White = new numbers which were 0 in the original file
-def print_sudoku(grid, level):
-    board = load_csv("{}_puzzle".format(grid))
-    orig_board = load_csv("{}_puzzle".format(level))
+def print_sudoku():
+    global orig_grid
+    global gameplay
+    board = gameplay
+    orig_board = orig_grid
     print_board = []
-    update_csv("gameplay_puzzle", board)
     print_title(sudoku_title)
     print("+" + "---+"*9)
     for r in range(0, len(board)):
@@ -172,16 +177,17 @@ def user_number():
 
 
 # Comparing the local gameplay grid to the original one
-def check_in_orig_puzzle(row, column, grid):
-    if int(load_csv(grid)[row][column]) != 0:
+def check_in_orig_puzzle(row, column):
+    global orig_grid
+    if int(orig_grid[row][column]) != 0:
         return True
     else:
         return False
 
 
 # Checking if the gampley grid still includes 0
-def check_for_zero(grid):
-    gameplay = load_csv("{}_puzzle".format(grid))
+def check_for_zero():
+    global gameplay
     for i in range(0, len(gameplay)):
         for num in gameplay[i]:
             if num == 0:
@@ -203,10 +209,11 @@ def new_game():
 
 
 # After the grid is filled, user can still edit it, then check if he/she won and exit or restart the game
-def check_continue(grid, level):
+def check_continue():
     user_answer = input("Would you like to change anything in your solution? (y / n) ")
-    gameplay = load_csv("{}_puzzle".format(grid))
-    easy_solution = load_csv("{}_solution".format(level))
+    global gameplay
+    global level
+    easy_solution = load_csv("{}_solution".format(level)) # kell bele a random generált szám
     if user_answer == "n".lower():
         if gameplay == easy_solution:
             time.sleep(1)
@@ -219,25 +226,24 @@ def check_continue(grid, level):
         return True
     else:
         print("Invalid input. Please try again.")
-        return check_continue(grid, level)
+        return check_continue()
 
 
 # Adding a new number to the grid, also checking if the index was 0 in the original layout
-def add_number(user_row, user_column, user_number, grid, level):
+def add_number(user_row, user_column, user_number):
     u_row = user_row() - 1  # u = user
-    u_column = user_column() - 1    # The 1st element is the 0th, that's why -1
-    if check_in_orig_puzzle(u_row, u_column, "{}_puzzle".format(level)):
+    u_column = user_column() - 1  # The 1st element is the 0th, that's why -1
+    global gameplay
+    if check_in_orig_puzzle(u_row, u_column):
         print("You can't overwrite the original layout!")
         return "continue"
     else:
         add_num = user_number()
-        gameplay = load_csv("{}_puzzle".format(grid))
         gameplay[u_row][u_column] = add_num
-        update_csv("{}_puzzle".format(grid), gameplay)
         os.system('clear')
-        print_sudoku(grid, level)
-        if not check_for_zero(grid):
-            if check_continue(grid, level):
+        print_sudoku()
+        if not check_for_zero():
+            if check_continue():
                 return True
             else:
                 return False
@@ -325,17 +331,17 @@ def print_levels():
 
 
 # Starting the game with a clear terminel to avoid "jumping line"
-def start_screen(orig_grid):
+def start_screen():
     os.system('clear')
-    print_sudoku(orig_grid, orig_grid)
+    print_sudoku()
     return orig_grid
 
 
 # The actual game:
-def start_game(user_row, user_column, user_number, gameplay, level):
+def start_game(user_row, user_column, user_number):
     start = time.time()
     while True:
-        if not add_number(user_row, user_column, user_number, gameplay, level):
+        if not add_number(user_row, user_column, user_number):
             break
     end = time.time()
     play_time = round(end - start)
@@ -354,7 +360,7 @@ def start_game(user_row, user_column, user_number, gameplay, level):
         else:
             print("You solved the puzzle in {0} minutes & {1} seconds".format(minutes, seconds))
     if new_game():
-        start_game(user_row, user_column, user_number, "gameplay", start_screen(print_levels()))
+        start_game(user_row, user_column, user_number)
 
 
 # Let the fun begin
