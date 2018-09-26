@@ -274,8 +274,9 @@ def add_number(user_row, user_column, user_number):
 def save_game():
     global gameplay
     global orig_grid
-    update_csv("save_gameplay", gameplay)
-    update_csv("save_orig_board", orig_grid)
+    global level
+    update_csv("{}_save_gameplay".format(level), gameplay)
+    update_csv("{}_save_orig_board".format(level), orig_grid)
 
 
 # Loads the saved gameplay from the external files
