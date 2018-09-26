@@ -87,8 +87,8 @@ def print_sudoku():
     global orig_grid
     global gameplay
     global level
-    level = level.split(chr(95))
-    level = level[0]
+    short_level = level.split(chr(95))
+    short_level = level[0]
     print_board = []
     print_title(sudoku_title)
     print("+" + "---+"*9)
@@ -96,11 +96,11 @@ def print_sudoku():
         print_row = []
         for c in range(0, len(gameplay[r])):
             if orig_grid[r][c] != 0:
-                if level == "demo" or level == "easy":
+                if short_level == "demo" or short_level == "easy":
                     print_row.append(colored(gameplay[r][c], "cyan"))
-                elif level == "medium":
+                elif short_level == "medium":
                     print_row.append(colored(gameplay[r][c], "yellow"))
-                elif level == "notfun":
+                elif short_level == "notfun":
                     print_row.append(colored(gameplay[r][c], "green"))
             else:
                 print_row.append(colored(gameplay[r][c], "white"))
@@ -346,6 +346,7 @@ def print_levels():
     print("\tMedium   -  press: '2'")
     print("\tNot fun  -  press: '3'\n")
     select_level()
+
 
 # Starting the game with a clear terminel to avoid "jumping line"
 def start_screen():
