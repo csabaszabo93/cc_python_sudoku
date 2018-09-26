@@ -56,7 +56,7 @@ valid_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 orig_grid = []
 gameplay = []
-level = ""
+level = "easy"
 
 
 # This prints the ASCII art
@@ -139,6 +139,10 @@ def user_row():
     elif row == "x":
         print("See you next time!")
         sys.exit()
+    elif row == "s":
+        print("Your game is saved.")
+        save_game()
+        return user_row()
     else:
         print("That's not a number!")
         return user_row()
@@ -158,6 +162,10 @@ def user_column():
     elif column == "x":
         print("See you next time!")
         sys.exit()
+    elif column == "s":
+        print("Your game is saved.")
+        save_game()
+        return user_column()
     else:
         print("That's not a number!")
         return user_column()
@@ -177,6 +185,10 @@ def user_number():
     elif number == "x":
         print("See you next time!")
         sys.exit()
+    elif number == "s":
+        print("Your game is saved.")
+        save_game()
+        return user_number()
     else:
         print("That's not a number!")
         return user_number()
@@ -220,9 +232,9 @@ def check_continue():
     user_answer = input("Would you like to change anything in your solution? (y / n) ")
     global gameplay
     global level
-    easy_solution = load_csv("{}_solution".format(level))   # kell bele a random generált szám
+    solution = load_csv("{}_solution".format(level))   # kell bele a random generált szám
     if user_answer == "n".lower():
-        if gameplay == easy_solution:
+        if gameplay == solution:
             time.sleep(1)
             print_title(winner_giraffe)
         else:
