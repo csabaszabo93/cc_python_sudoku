@@ -56,7 +56,7 @@ valid_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 orig_grid = []
 gameplay = []
-level = "easy"
+level = ""
 
 
 # This prints the ASCII art
@@ -66,7 +66,8 @@ def print_title(ascii):
 
 # Loading the gameplay csv template and initializing that grid it into a new local list
 def load_csv(filename):
-    with open("{}.csv".format(filename), "r") as f:
+    directory = "/home/csaba/codecool/python/sudoku/puzzles/"
+    with open("{0}{1}.csv".format(directory, filename), "r") as f:
         reader = list(csv.reader(f))
         for lst in reader:
             for i in range(0, len(lst), 1):
@@ -76,7 +77,8 @@ def load_csv(filename):
 
 # This function is used to overwrite the original grid locally
 def update_csv(filename, matrix):
-    with open("{}.csv".format(filename), "w") as f:
+    directory = "/home/csaba/codecool/python/sudoku/saves/"
+    with open("{}{}.csv".format(directory, filename), "w") as f:
         writer = csv.writer(f)
         for row in matrix:
             writer.writerow(row)
@@ -88,7 +90,7 @@ def print_sudoku():
     global gameplay
     global level
     short_level = level.split(chr(95))
-    short_level = level[0]
+    short_level = short_level[0]
     print_board = []
     print_title(sudoku_title)
     print("+" + "---+"*9)
