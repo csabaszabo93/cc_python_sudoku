@@ -86,23 +86,24 @@ def update_csv(filename, matrix):
 def print_sudoku():
     global orig_grid
     global gameplay
-    board = gameplay
-    orig_board = orig_grid
+    global level
+    level = level.split(chr(95))
+    level = level[0]
     print_board = []
     print_title(sudoku_title)
     print("+" + "---+"*9)
-    for r in range(0, len(board)):
+    for r in range(0, len(gameplay)):
         print_row = []
-        for c in range(0, len(board[r])):
-            if orig_board[r][c] != 0:
+        for c in range(0, len(gameplay[r])):
+            if orig_grid[r][c] != 0:
                 if level == "demo" or level == "easy":
-                    print_row.append(colored(board[r][c], "cyan"))
+                    print_row.append(colored(gameplay[r][c], "cyan"))
                 elif level == "medium":
-                    print_row.append(colored(board[r][c], "yellow"))
+                    print_row.append(colored(gameplay[r][c], "yellow"))
                 elif level == "notfun":
-                    print_row.append(colored(board[r][c], "green"))
+                    print_row.append(colored(gameplay[r][c], "green"))
             else:
-                print_row.append(colored(board[r][c], "white"))
+                print_row.append(colored(gameplay[r][c], "white"))
         print_board.append(print_row)
     for i, row in enumerate(print_board):
         print(("|" + " {}   {}   {} |"*3).format(*[x if x != colored(0, "white") else " " for x in row]))
@@ -242,7 +243,7 @@ def add_number(user_row, user_column, user_number):
     global gameplay
     if check_in_orig_puzzle(u_row, u_column):
         print("You can't overwrite the original layout!")
-        return "continue"
+        return True
     else:
         add_num = user_number()
         gameplay[u_row][u_column] = add_num
@@ -260,17 +261,18 @@ def add_number(user_row, user_column, user_number):
 # Saves the current gameplay in to an external files
 def save_game():
     global gameplay
-    global orig_board
+    global orig_grid
     update_csv("save_gameplay", gameplay)
-    update_csv("save_orig_board", orig_board)
+    update_csv("save_orig_board", orig_grid)
 
 
 # Loads the saved gameplay from the external files
 def load_game():
     global gameplay
-    global orig_board
+    global orig_grid
     gameplay = load_csv("save_gameplay")
-    orig_board = load_csv("save_orig_board", orig_board)
+    orig_grid = load_csv("save_orig_board")
+    start_game(user_row, user_column, user_number)
 
 
 def print_main_menu():
@@ -292,7 +294,7 @@ def start_main_menu():
         option = input("\tChoose an option: ")
         if option == "1":
             time.sleep(0.5)
-            start_game(user_row, user_column, user_number, "gameplay", start_screen(print_levels()))
+            print_levels()
             invalid = False
         elif option == "2":
             time.sleep(0.5)
@@ -306,13 +308,33 @@ def start_main_menu():
 
 # User can choose diffculty
 def select_level():
+    global level
+    global gameplay
+    global orig_grid
     u_level = input("\tChoose your level: ").lower()
     while u_level not in ["0", "1", "2", "3", "x"]:
         print("\tInvalid input!")
         u_level = input("\tChoose your level: ").lower()
-    num = random.randint(1, 10)
-    level = "{}_puzzle_{}".format(u_level, num)
-    return level
+    if u_level == "0":
+        u_level = "demo"
+    elif u_level == "1":
+        u_level = "easy"
+    elif u_level == "2":
+        u_level = "medium"
+    elif u_level == "3":
+        u_level = "notfun"
+    elif u_level == "x":
+        time.sleep(0.5)
+        print("See you next time!")
+        sys.exit()
+    if u_level != "demo":
+        num = random.randint(1, 10)
+        level = "{}_puzzle_{}".format(u_level, num)
+    else:
+        level = "{}_puzzle".format(u_level)
+    gameplay = load_csv(level)
+    orig_grid = load_csv(level)
+    start_game(user_row, user_column, user_number)
 
 
 def print_levels():
@@ -323,30 +345,17 @@ def print_levels():
     print("\tEasy     -  press: '1'")
     print("\tMedium   -  press: '2'")
     print("\tNot fun  -  press: '3'\n")
-    time.sleep(0.5)
-    level = select_level()
-    if level == "0":
-        return "demo"
-    elif level == "1":
-        return "easy"
-    elif level == "2":
-        return "medium"
-    elif level == "3":
-        return "notfun"
-    elif level == "x":
-        print("See you next time!")
-        sys.exit()
-
+    select_level()
 
 # Starting the game with a clear terminel to avoid "jumping line"
 def start_screen():
     os.system('clear')
     print_sudoku()
-    return orig_grid
 
 
 # The actual game:
 def start_game(user_row, user_column, user_number):
+    start_screen()
     start = time.time()
     while True:
         if not add_number(user_row, user_column, user_number):
@@ -368,7 +377,7 @@ def start_game(user_row, user_column, user_number):
         else:
             print("You solved the puzzle in {0} minutes & {1} seconds".format(minutes, seconds))
     if new_game():
-        start_game(user_row, user_column, user_number)
+        print_levels()
 
 
 # Let the fun begin
