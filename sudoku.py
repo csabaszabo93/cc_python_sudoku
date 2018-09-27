@@ -10,11 +10,10 @@ import tty
 
 
 sudoku_title = r"""
-
-        ___         _       _
-       / __> _ _  _| | ___ | |__ _ _
-       \__ \| | |/ . |/ . \| / /| | |
-       <___/`___|\___|\___/|_\_\`___|
+          ___         _       _
+         / __> _ _  _| | ___ | |__ _ _
+         \__ \| | |/ . |/ . \| / /| | |
+         <___/`___|\___|\___/|_\_\`___|
 
 
       Press 'x' to quit your current game.
@@ -58,8 +57,8 @@ valid_numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 orig_grid = []
 gameplay = []
 level = ""
-save_directory = "/home/csaba/codecool/python/sudoku/saves/"
-new_directory = "/home/csaba/codecool/python/sudoku/puzzles/"
+save_directory = "/home/kata/codecool/Python/sudoku/cc_python_sudoku/saved_games/"
+new_directory = "/home/kata/codecool/Python/sudoku/cc_python_sudoku/puzzles/"
 
 
 # This prints the ASCII art
@@ -98,7 +97,7 @@ def print_sudoku():
     short_level = short_level[0]
     print_board = []
     print_title(sudoku_title)
-    print("    +" + "---+"*9)
+    print("     +" + "---+"*9)
     for r in range(0, len(gameplay)):
         print_row = []
         for c in range(0, len(gameplay[r])):
@@ -113,11 +112,11 @@ def print_sudoku():
                 print_row.append(colored(gameplay[r][c], "white"))
         print_board.append(print_row)
     for i, row in enumerate(print_board):
-        print(("    |" + " {}   {}   {} |"*3).format(*[x if x != colored(0, "white") else " " for x in row]))
+        print(("     |" + " {}   {}   {} |"*3).format(*[x if x != colored(0, "white") else " " for x in row]))
         if i % 3 == 2:
-            print("    +" + "---+"*9)
+            print("     +" + "---+"*9)
         else:
-            print("    +" + "   +"*9)
+            print("     +" + "   +"*9)
 
 
 # User input without pressing enter
@@ -135,7 +134,7 @@ def getch():
 
 # Asking the player to add the row number
 def user_row():
-    print("Choose a row:")
+    print("\n Choose a row:")
     row = getch()
     if row.isdigit():
         if int(row) in valid_numbers:
@@ -145,7 +144,7 @@ def user_row():
             print("That's not a valid number!")
             return user_row()
     elif row == "x":
-        print("See you next time!")
+        print("\nSee you next time!")
         sys.exit()
     elif row == "s":
         print("Your game is saved.")
@@ -158,7 +157,7 @@ def user_row():
 
 # Asking the player to add the column number
 def user_column():
-    print("Choose a column:")
+    print(" Choose a column:")
     column = getch()
     if column.isdigit():
         if int(column) in valid_numbers:
@@ -168,7 +167,7 @@ def user_column():
             print("That's not a valid number!")
             return user_column()
     elif column == "x":
-        print("See you next time!")
+        print("\nSee you next time!")
         sys.exit()
     elif column == "s":
         print("Your game is saved.")
@@ -181,7 +180,7 @@ def user_column():
 
 # Asking the player to add the number
 def user_number():
-    print("Add a number from 1 to 9: ")
+    print(" Add a number from 1 to 9: ")
     number = getch()
     if number.isdigit():
         if int(number) in valid_numbers:
@@ -191,7 +190,7 @@ def user_number():
             print("That's not a valid number!")
             return user_number()
     elif number == "x":
-        print("See you next time!")
+        print("\nSee you next time!")
         sys.exit()
     elif number == "s":
         print("Your game is saved.")
@@ -227,7 +226,7 @@ def new_game():
     if new == "y":
         return True
     elif new == "n":
-        print("See you next time!")
+        print("\nSee you next time!")
         sys.exit()
     else:
         print("Invalid input!")
@@ -321,7 +320,7 @@ def print_save_list():
         index += 1
     index = choose_save_game(len(save_list))
     if index == "x":
-        print("See you next time!")
+        print("\nSee you next time!")
         sys.exit()
     else:
         index = int(index) - 1
@@ -345,10 +344,9 @@ def load_game():
 def print_main_menu():
     os.system("clear")
     print_title(sudoku_title)
-    print("\t---------Main menu---------\n")
-    print("\tNew Game     -  press: '1'")
-    print("\tLoad Game    -  press: '2'")
-    print("\tExit Game    -  press: '3'\n")
+    print("    (------------- Main menu -------------)\n")
+    print("\t   New Game    -   press: '1'")
+    print("\t   Load Game   -   press: '2'\n")
 
 
 # Starts the main menu
@@ -357,9 +355,9 @@ def start_main_menu():
     while True:
         print_main_menu()
         if invalid:
-            print("\tInvalid option!")
+            print("\t   Invalid option!")
         time.sleep(0.5)
-        option = input("\tChoose an option: ")
+        option = input("\t   Choose an option: ")
         if option == "1":
             time.sleep(0.5)
             print_levels()
@@ -368,10 +366,11 @@ def start_main_menu():
             time.sleep(0.5)
             load_game()
             invalid = False
-        elif option != "3":
-            invalid = True
-        else:
+        elif option == "x":
+            print("\nSee you next time!")
             break
+        else:
+            invalid = True
 
 
 # User can choose diffculty
@@ -379,10 +378,10 @@ def select_level():
     global level
     global gameplay
     global orig_grid
-    u_level = input("\tChoose your level: ").lower()
+    u_level = input("\t   Choose your level: ").lower()
     while u_level not in ["0", "1", "2", "3", "x"]:
         print("\tInvalid input!")
-        u_level = input("\tChoose your level: ").lower()
+        u_level = input("\t Choose your level: ").lower()
     if u_level == "0":
         u_level = "demo"
     elif u_level == "1":
@@ -393,7 +392,7 @@ def select_level():
         u_level = "notfun"
     elif u_level == "x":
         time.sleep(0.5)
-        print("See you next time!")
+        print("\nSee you next time!")
         sys.exit()
     if u_level != "demo":
         num = random.randint(1, 10)
@@ -408,11 +407,11 @@ def select_level():
 def print_levels():
     os.system('clear')
     print_title(sudoku_title)
-    print("\t(-------Levels-------)\n")
-    print("\tDemo     -  press: '0'")
-    print("\tEasy     -  press: '1'")
-    print("\tMedium   -  press: '2'")
-    print("\tNot fun  -  press: '3'\n")
+    print("    (-------------- Levels ---------------)\n")
+    print("\t    Demo       -    press: '0'")
+    print("\t    Easy       -    press: '1'")
+    print("\t    Medium     -    press: '2'")
+    print("\t    Not fun    -    press: '3'\n")
     select_level()
 
 
@@ -446,7 +445,7 @@ def start_game(user_row, user_column, user_number):
         else:
             print("You solved the puzzle in {0} minutes & {1} seconds".format(minutes, seconds))
     if new_game():
-        print_levels()
+        start_main_menu()
 
 
 # Let the fun begin
