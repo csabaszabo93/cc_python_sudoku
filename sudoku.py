@@ -129,6 +129,7 @@ def getch():
         ch = sys.stdin.read(1)
     finally:
         termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
+        print(ch)
     return ch
 
 
@@ -286,11 +287,13 @@ def save_game():
     update_csv("{}_save_orig_board".format(level), orig_grid)
 
 
+# Generates the string format number list fo choose save game
 def generate_str_num_list(length):
     for num in range(1, length + 1):
         yield str(num)
 
 
+# Asks the user which file has to be loaded
 def choose_save_game(length):
     game = input("\n    Choose a gameplay to load: ")
     while game not in generate_str_num_list(length) and game != "x":
@@ -299,6 +302,7 @@ def choose_save_game(length):
     return game
 
 
+# Prints the list of saved games
 def print_save_list():
     global gameplay
     global orig_grid
@@ -344,6 +348,7 @@ def print_main_menu():
     print("\tExit Game    -  press: '3'\n")
 
 
+# Starts the main menu
 def start_main_menu():
     invalid = False
     while True:
