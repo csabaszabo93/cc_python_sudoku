@@ -58,7 +58,8 @@ valid_numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 orig_grid = []
 gameplay = []
 level = ""
-directory = "/home/csaba/codecool/python/sudoku/saves/"
+save_directory = "/home/csaba/codecool/python/sudoku/saves/"
+new_directory = "/home/csaba/codecool/python/sudoku/puzzles/"
 
 
 # This prints the ASCII art
@@ -67,8 +68,10 @@ def print_title(ascii):
 
 
 # Loading the gameplay csv template and initializing that grid it into a new local list
-def load_csv(filename):
-    global directory
+def load_csv(filename, new=True):
+    global save_directory
+    global new_directory
+    directory = new_directory if new else save_directory
     with open("{0}{1}.csv".format(directory, filename), "r") as f:
         reader = list(csv.reader(f))
         for lst in reader:
@@ -79,8 +82,8 @@ def load_csv(filename):
 
 # This function is used to overwrite the original grid locally
 def update_csv(filename, matrix):
-    global directory
-    with open("{}{}.csv".format(directory, filename), "w") as f:
+    global save_directory
+    with open("{}{}.csv".format(save_directory, filename), "w") as f:
         writer = csv.writer(f)
         for row in matrix:
             writer.writerow(row)
@@ -299,10 +302,10 @@ def choose_save_game(length):
 def print_save_list():
     global gameplay
     global orig_grid
-    global directory
+    global save_directory
     global level
-    save_list = sorted([item[:-4] for item in os.listdir(directory) if "gameplay" in item])
-    orig_list = sorted([item[:-4] for item in os.listdir(directory) if "orig" in item])
+    save_list = sorted([item[:-4] for item in os.listdir(save_directory) if "gameplay" in item])
+    orig_list = sorted([item[:-4] for item in os.listdir(save_directory) if "orig" in item])
     index = 1
     print(sudoku_title)
     print("\t(----Saved Games----)\n")
@@ -317,8 +320,8 @@ def print_save_list():
         index = int(index) - 1
     gameplay_to_load = save_list[index]
     orig_grid_to_load = orig_list[index]
-    gameplay = load_csv(gameplay_to_load)
-    orig_grid = load_csv(orig_grid_to_load)
+    gameplay = load_csv(gameplay_to_load, False)
+    orig_grid = load_csv(orig_grid_to_load, False)
     level = save_list[index].split(chr(95))
     level = chr(95).join(level[:3])
 
