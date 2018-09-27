@@ -17,8 +17,9 @@ sudoku_title = r"""
        <___/`___|\___|\___/|_\_\`___|
 
 
-   Press 'x' to quit your current game.
-   Press 's' to save your current game.
+      Press 'x' to quit your current game.
+      Press 's' to save your current game.
+   Add '0' to remove an already added number.
  """
 
 
@@ -52,11 +53,12 @@ loser_giraffe = r"""
                     """
 
 
-valid_numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+valid_numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 
 orig_grid = []
 gameplay = []
 level = ""
+directory = "/home/csaba/codecool/python/sudoku/saves/"
 
 
 # This prints the ASCII art
@@ -66,7 +68,7 @@ def print_title(ascii):
 
 # Loading the gameplay csv template and initializing that grid it into a new local list
 def load_csv(filename):
-    directory = "/home/csaba/codecool/python/sudoku/puzzles/"
+    global directory
     with open("{0}{1}.csv".format(directory, filename), "r") as f:
         reader = list(csv.reader(f))
         for lst in reader:
@@ -77,7 +79,7 @@ def load_csv(filename):
 
 # This function is used to overwrite the original grid locally
 def update_csv(filename, matrix):
-    directory = "/home/csaba/codecool/python/sudoku/saves/"
+    global directory
     with open("{}{}.csv".format(directory, filename), "w") as f:
         writer = csv.writer(f)
         for row in matrix:
@@ -93,7 +95,7 @@ def print_sudoku():
     short_level = short_level[0]
     print_board = []
     print_title(sudoku_title)
-    print("+" + "---+"*9)
+    print("    +" + "---+"*9)
     for r in range(0, len(gameplay)):
         print_row = []
         for c in range(0, len(gameplay[r])):
@@ -108,11 +110,11 @@ def print_sudoku():
                 print_row.append(colored(gameplay[r][c], "white"))
         print_board.append(print_row)
     for i, row in enumerate(print_board):
-        print(("|" + " {}   {}   {} |"*3).format(*[x if x != colored(0, "white") else " " for x in row]))
+        print(("    |" + " {}   {}   {} |"*3).format(*[x if x != colored(0, "white") else " " for x in row]))
         if i % 3 == 2:
-            print("+" + "---+"*9)
+            print("    +" + "---+"*9)
         else:
-            print("+" + "   +"*9)
+            print("    +" + "   +"*9)
 
 
 # User input without pressing enter
@@ -281,12 +283,52 @@ def save_game():
     update_csv("{}_save_orig_board".format(level), orig_grid)
 
 
-# Loads the saved gameplay from the external files
-def load_game():
+def generate_str_num_list(length):
+    for num in range(1, length + 1):
+        yield str(num)
+
+
+def choose_save_game(length):
+    game = input("\n    Choose a gameplay to load: ")
+    while game not in generate_str_num_list(length) and game != "x":
+        print("Invalid option")
+        game = input("    Choose a gameplay to load: ")
+    return game
+
+
+def print_save_list():
     global gameplay
     global orig_grid
-    gameplay = load_csv("save_gameplay")
-    orig_grid = load_csv("save_orig_board")
+    global directory
+    global level
+    save_list = sorted([item[:-4] for item in os.listdir(directory) if "gameplay" in item])
+    orig_list = sorted([item[:-4] for item in os.listdir(directory) if "orig" in item])
+    index = 1
+    print(sudoku_title)
+    print("\t(----Saved Games----)\n")
+    for item in save_list:
+        print("    {0}) {1}".format(index, item))
+        index += 1
+    index = choose_save_game(len(save_list))
+    if index == "x":
+        print("See you next time!")
+        sys.exit()
+    else:
+        index = int(index) - 1
+    gameplay_to_load = save_list[index]
+    orig_grid_to_load = orig_list[index]
+    gameplay = load_csv(gameplay_to_load)
+    orig_grid = load_csv(orig_grid_to_load)
+    level = save_list[index].split(chr(95))
+    level = chr(95).join(level[:3])
+
+
+# Loads the saved gameplay from the external files
+def load_game():
+    time.sleep(0.5)
+    os.system("clear")
+    print_save_list()
+    time.sleep(0.5)
     start_game(user_row, user_column, user_number)
 
 
