@@ -240,7 +240,10 @@ def check_continue():
     user_answer = input("Would you like to change anything in your solution? (y / n) ")
     global gameplay
     global level
-    solution = load_csv("{}_solution".format(level))   # kell bele a random generált szám
+    loc_level = level.split(chr(95))
+    loc_level[1] = "solution"
+    loc_level = chr(95).join(loc_level)
+    solution = load_csv("{}".format(loc_level))   # kell bele a random generált szám
     if user_answer == "n".lower():
         if gameplay == solution:
             time.sleep(1)
